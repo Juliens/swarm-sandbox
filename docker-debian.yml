@@ -1,0 +1,23 @@
+---
+- hosts: all
+  tasks:
+  - name: install apt-transport-https
+    apt: name=apt-transport-https state=present update_cache=yes
+  - name: install ca-certificates
+    apt: name=ca-certificates state=present update_cache=yes
+  - name: install bridge utils
+    apt: name=bridge-utils state=present update_cache=yes
+
+  - name: add docker key
+    apt_key: url=https://download.docker.com/linux/debian/gpg state=present
+
+  - name: add docker repo
+    lineinfile:
+      dest: /etc/apt/sources.list.d/docker.list
+      line: "deb [arch=amd64] https://download.docker.com/linux/debian debian-jessie stable"
+      #line: "deb https://apt.dockerproject.org/repo debian-jessie main"
+      create: yes
+  - name: install docker
+    apt: name=docker-ce state=present update_cache=yes
+  - name: enable docker service
+    service: name=docker enabled=yes
